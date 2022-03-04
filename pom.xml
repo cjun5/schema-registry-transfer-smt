@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cricket.jmoore</groupId>
     <artifactId>schema-registry-transfer-smt</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.2.1</version>
     <name>schema-registry-transfer-smt</name>
     <description>
         A Kafka Connect Transform for copying Confluent Schema Registry schemas between different registries.
     </description>
-    <url>https://github.com/cricket007/schema-registry-transfer-smt</url>
+    <url>https://github.com/tucows/schema-registry-transfer-smt</url>
     <inceptionYear>2019</inceptionYear>
     <licenses>
         <license>
             <name>Apache License 2.0</name>
-            <url>https://github.com/cricket007/schema-registry-transfer-smt/LICENSE</url>
+            <url>https://github.com/tucows/schema-registry-transfer-smt/blob/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -24,26 +25,27 @@
             <name>Jordan Moore</name>
             <url>https://github.com/cricket007</url>
             <roles>
-                <role>Owner</role>
+                <role>Owner (Original)</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>eddyv</id>
+            <name>Edward Vaisman</name>
+            <url>https://github.com/eddyv</url>
+            <roles>
+                <role>Maintainer</role>
             </roles>
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:https://github.com/cricket007/schema-registry-transfer-smt.git</connection>
-        <developerConnection>scm:git:git@github.com:cricket007/schema-registry-transfer-smt.git</developerConnection>
-        <url>https://github.com/cricket007/schema-registry-transfer-smt</url>
+        <connection>scm:git:https://github.com/cjun5/schema-registry-transfer-smt.git</connection>
+        <developerConnection>scm:git:git@github.com:cjun5/schema-registry-transfer-smt.git</developerConnection>
+        <url>https://github.com/cjun5/schema-registry-transfer-smt</url>
     </scm>
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/cricket007/schema-registry-transfer-smt/issues</url>
+        <url>https://github.com/cjun5/schema-registry-transfer-smt/issues</url>
     </issueManagement>
-    <distributionManagement>
-        <repository>
-            <id>bintray</id>
-            <name>bintray-releases</name>
-            <url>https://api.bintray.com/maven/${env.BINTRAY_REPO_OWNER}/${env.BINTRAY_REPO}/${project.artifactId}/;publish=1</url>
-        </repository>
-    </distributionManagement>
 
     <repositories>
         <repository>
@@ -66,11 +68,10 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <slf4j.version>1.7.25</slf4j.version>
-        <kafka.version>2.1.0</kafka.version>
-        <confluent.version>5.1.0</confluent.version>
-        <confluent.patch.version>-cp1</confluent.patch.version>
-        <jackson.version>2.9.7</jackson.version>
-        <jackson.asl.version>1.9.13</jackson.asl.version>
+        <confluent.version>5.5.0</confluent.version>
+        <jackson.version>2.10.2</jackson.version>
+        <avro.version>1.9.2</avro.version>
+        <jersey.bean.validation.version>2.30</jersey.bean.validation.version>
 
         <spotless.version>1.19.0</spotless.version>
 
@@ -90,14 +91,14 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>${kafka.version}${confluent.patch.version}</version>
+            <version>${confluent.version}-ccs</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>connect-transforms</artifactId>
-            <version>${kafka.version}${confluent.patch.version}</version>
+            <version>${confluent.version}-ccs</version>
             <scope>provided</scope>
         </dependency>
 
@@ -123,13 +124,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.101tec</groupId>
-            <artifactId>zkclient</artifactId>
-            <version>0.10</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
@@ -137,16 +131,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${jackson.asl.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson.asl.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -178,11 +172,18 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-bean-validation</artifactId>
+            <version>${jersey.bean.validation.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Runtime dependencies -->
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
-            <version>1.8.1</version>
+            <version>${avro.version}</version>
         </dependency>
 
         <dependency>
@@ -201,8 +202,16 @@
                     <artifactId>kafka-clients</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
+                    <groupId>io.swagger</groupId>
+                    <artifactId>swagger-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.swagger</groupId>
+                    <artifactId>swagger-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.ext</groupId>
+                    <artifactId>jersey-bean-validation</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -284,7 +293,8 @@
                         </relocation>
                     </relocations>
                     <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                     </transformers>
                 </configuration>
                 <executions>
@@ -331,7 +341,7 @@
                         <!--<version>1.7</version>-->
                         <!--<style>GOOGLE</style>-->
                         <!--</googleJavaFormat>-->
-                        <removeUnusedImports />
+                        <removeUnusedImports/>
                         <importOrder>
                             <order>java,org,io.confluent,com,cricket.jmoore,</order>
                         </importOrder>
